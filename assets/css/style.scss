@@ -1,0 +1,226 @@
+@import "./fonts.scss";
+@import "./functions.scss";
+
+$background: #000542;
+$jaune: #fff500;
+
+// Comme  j'ai fait mon intégration pour un écran de 630px de h, je calcule le ratio pour mettre à l'échelle sur les autres hauteurs d'écran. On veut que les tailles diminues (font et grid) mais pas en dessous d'une primaryBar qui correspond à 100px de haut.
+
+$hScreenRatio: 100vh / 630;
+$maxReducRatio: 100 / 200; // correspond à 105 / 200
+
+// Calcul des hauteur en fonction de ces rations
+
+$tmp: 200 * $hScreenRatio;
+$maxH: calc(200px * #{$maxReducRatio});
+$hPrimaryBar: calc(max(#{$maxH}, #{$tmp}));
+
+$tmp: 160 * $hScreenRatio;
+$maxH: calc(160px * #{$maxReducRatio});
+$fontSizePrimaryBar: calc(max(#{$maxH}, #{$tmp}));
+
+$tmp: 70 * $hScreenRatio;
+$maxH: calc(70px * #{$maxReducRatio});
+$hSecondaryBar: calc(max(#{$maxH}, #{$tmp}));
+
+$tmp: 47 * $hScreenRatio;
+$maxH: calc(47px * #{$maxReducRatio});
+$fontSizeSecondaryBar: calc(max(#{$maxH}, #{$tmp}));
+
+$tmp: 16 * $hScreenRatio;
+$maxH: calc(16px * #{$maxReducRatio});
+$textFontSize: calc(max(#{$maxH}, #{$tmp}));
+
+$tmp: 20 * $hScreenRatio;
+$maxH: calc(20px * #{$maxReducRatio});
+$textMailImgH:  calc(max(#{$maxH}, #{$tmp}));
+
+// Ratio de la photo (pour les proportions)
+$ratioPh: 755/617;
+
+$tmp: 310 * $hScreenRatio;
+$maxH: calc(310px * #{$maxReducRatio});
+$hPhotoBox: calc(max(#{$maxH}, #{$tmp}));
+$hPhotoBoxWithoutUnit: 310;
+
+$tmp: 270 * $hScreenRatio;
+$maxH: calc(270px * #{$maxReducRatio});
+$rBigBall: calc(max(#{$maxH}, #{$tmp}));
+$rBigBallWithoutUnit: 270;
+
+$rSmallBall: 28px;
+$rSmallBallWithoutUnit: strip-unit($rSmallBall);
+
+body {
+    background-color: $background;
+    margin: 2vh;
+    font-family: "gtfr";
+}
+
+.grid-wrapper {
+    height: 100%;
+    display: grid;
+    grid-template-rows: $hPrimaryBar $hSecondaryBar auto; 
+    border: 3px $jaune solid;
+}
+
+.moving-bar {
+    display: flex;
+    white-space: nowrap;
+    overflow-x: hidden;
+    div {
+        padding: 0 10px;
+    }
+}
+
+.moving-bar{
+    :nth-child(2n) {
+        color: $jaune;
+    }
+    :nth-child(2n+1) {
+        color: $background;
+    }
+}
+
+.primary {
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: $jaune;
+    font-size: $fontSizePrimaryBar;
+
+    /* #p-2,
+    #p-4 {
+        color: $jaune;
+    }
+    #p-1,
+    #p-3 {
+        color: $background;
+    } */
+}
+
+.secondary {
+    border-top: 2px $jaune solid;
+    border-bottom: 2px $jaune solid;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: $jaune;
+    font-size: $fontSizeSecondaryBar;
+
+   /*  #s-2,
+    #s-4 {
+        color: $jaune;
+    }
+
+    #s-1,
+    #s-3 {
+        color: $background;
+    } */
+}
+
+.main-content {
+    display: flex;
+    #portrait-box {
+        flex: 3;
+        align-self: flex-end;
+        #portrait-wrapper {
+            position: relative;
+            height: $hPhotoBox;
+            #portrait-img {
+                position: absolute;
+                max-height: 100%;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            .big {
+                position: absolute;
+                border-radius: 50%;
+                background-color: $jaune;
+                width: $rBigBall;
+                height: $rBigBall;
+                left: 50%;
+                top: 10%;
+                transform: translateX(-60%);
+                z-index: -1;
+            }
+            .small {
+                position: absolute;
+                border-radius: 50%;
+                background-color: $jaune;
+                z-index: 10;
+                width: 28px;
+                height: 28px;
+                left: 60%;
+                top: 80%;
+                transform: translateX(-60%) translateY(-40%);
+            }
+        }
+    }
+    #text-content {
+        flex: 2;
+        align-self: center;
+
+        p {
+            color: $jaune;
+            font-size: $textFontSize;
+            margin-right: 5vh;
+        }
+
+        #mail-box {
+            display: flex;
+        
+            #mail-img {
+                height: $textMailImgH;
+                width: auto;
+                fill: $jaune;
+            }
+            #mail-adress {
+                color: $jaune;
+                padding-left: 7px;
+                font-size: $textFontSize;
+            }
+        }
+    }
+}
+
+
+
+/* RESPONSIVE PART */
+
+$break: 960px;
+$break-down: "only screen and (max-width: #{$break})";
+$break-up: "only screen and (min-width: #{$break})";
+
+@media #{$break-up} {
+    body {
+        height: 96vh;
+    }
+}
+
+$hPhotoBoxResp: calc(min(#{$hPhotoBox}, calc(80vw / #{$ratioPh})));
+$rBigBallResp: calc(min(#{$rBigBall}, calc((80vw * #{$rBigBallWithoutUnit}) / (#{$ratioPh} * #{$hPhotoBoxWithoutUnit}))));
+$rSmallBallResp: min(
+    #{$rSmallBall},
+    calc((80vw * #{$rSmallBallWithoutUnit}) / (#{$ratioPh} * #{$hPhotoBoxWithoutUnit}))
+);
+
+@media #{$break-down} {
+    .main-content {
+        flex-direction: column-reverse;
+        #portrait-box {
+            align-self: center;
+            #portrait-wrapper {
+                width: 80vw;
+                height: $hPhotoBoxResp;
+                .big {
+                    width: $rBigBallResp;
+                    height: $rBigBallResp;
+                }
+                .small {
+                    width: $rSmallBallResp;
+                    height: $rSmallBallResp;
+                }
+            }
+        }
+        #text-content {
+            margin: 5% 10%;
+        }
+    }
+}
